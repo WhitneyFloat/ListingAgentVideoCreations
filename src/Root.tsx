@@ -25,6 +25,7 @@ export const RemotionRoot: React.FC = () => {
         schema={MyCompositionSchema}
         defaultProps={{
           scenes: defaultScenes,
+          watermark: true,
         }}
         calculateMetadata={calculateMetadata}
       />

@@ -12,6 +12,7 @@ export const SceneSchema = z.object({
 
 export const MyCompositionSchema = z.object({
   scenes: z.array(SceneSchema),
+  watermark: z.boolean().optional(),
 });
 
 export type MyCompositionProps = z.infer<typeof MyCompositionSchema>;
@@ -49,35 +50,56 @@ export const defaultScenes = [
   },
 ];
 
-export const MyComposition: React.FC<MyCompositionProps> = ({ scenes }) => {
+export const MyComposition: React.FC<MyCompositionProps> = ({ scenes, watermark = false }) => {
   return (
-    <TransitionSeries>
-      {scenes.map((scene, idx) => {
-        const sequence = (
-          <TransitionSeries.Sequence key={`seq-${idx}`} durationInFrames={150}>
-            <CinematicFrame
-              src={scene.src}
-              title={scene.title}
-              description={scene.description}
-              panDirection={scene.panDirection}
-            />
-          </TransitionSeries.Sequence>
-        );
+    <div className="w-full h-full relative">
+      <TransitionSeries>
+        {scenes.map((scene, idx) => {
+          const sequence = (
+            <TransitionSeries.Sequence key={`seq-${idx}`} durationInFrames={150}>
+              <CinematicFrame
+                src={scene.src}
+                title={scene.title}
+                description={scene.description}
+                panDirection={scene.panDirection}
+              />
+            </TransitionSeries.Sequence>
+          );
 
-        if (idx === scenes.length - 1) {
-          return [sequence];
-        }
+          if (idx === scenes.length - 1) {
+            return [sequence];
+          }
 
-        return [
-          sequence,
-          <TransitionSeries.Transition
-            key={`trans-${idx}`}
-            presentation={fade()}
-            timing={linearTiming({ durationInFrames: 30 })}
-          />,
-        ];
-      }).flat()}
-    </TransitionSeries>
+          return [
+            sequence,
+            <TransitionSeries.Transition
+              key={`trans-${idx}`}
+              presentation={fade()}
+              timing={linearTiming({ durationInFrames: 30 })}
+            />,
+          ];
+        }).flat()}
+      </TransitionSeries>
+
+      {/* Watermark Overlay */}
+      {watermark && (
+        <div className="absolute inset-0 pointer-events-none flex flex-col justify-around overflow-hidden select-none z-50">
+          {[...Array(5)].map((_, i) => (
+            <div
+              key={i}
+              className="flex justify-around text-white/10 text-6xl font-extrabold tracking-widest uppercase select-none"
+              style={{
+                transform: `rotate(-15deg) translateX(${i % 2 === 0 ? "50px" : "-50px"})`,
+              }}
+            >
+              {[...Array(4)].map((_, j) => (
+                <span key={j}>PREVIEW ONLY</span>
+              ))}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
   );
 };
 

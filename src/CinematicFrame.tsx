@@ -1,5 +1,5 @@
 import React from "react";
-import { AbsoluteFill, Img, interpolate, useCurrentFrame, useVideoConfig, Easing } from "remotion";
+import { AbsoluteFill, Img, interpolate, useCurrentFrame, useVideoConfig, Easing, staticFile } from "remotion";
 
 interface CinematicFrameProps {
   src: string;
@@ -69,7 +69,7 @@ export const CinematicFrame: React.FC<CinematicFrameProps> = ({
         }}
       >
         <Img
-          src={src}
+          src={staticFile(src)}
           className="w-full h-full object-cover"
         />
       </div>

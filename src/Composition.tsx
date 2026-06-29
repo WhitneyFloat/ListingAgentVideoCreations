@@ -1,42 +1,55 @@
-import { staticFile } from "remotion";
+import { z } from "zod";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
 import { CinematicFrame } from "./CinematicFrame";
 
-const scenes = [
+export const SceneSchema = z.object({
+  src: z.string(),
+  title: z.string(),
+  description: z.string(),
+  panDirection: z.enum(["left-to-right", "right-to-left", "top-to-bottom", "bottom-to-top"]).optional(),
+});
+
+export const MyCompositionSchema = z.object({
+  scenes: z.array(SceneSchema),
+});
+
+export type MyCompositionProps = z.infer<typeof MyCompositionSchema>;
+
+export const defaultScenes = [
   {
-    src: staticFile("assets/media__1782768140498.png"),
+    src: "assets/media__1782768140498.png",
     title: "Welcome to Your Future Home",
     description: "Stunning modern architecture and landscape.",
     panDirection: "left-to-right" as const,
   },
   {
-    src: staticFile("assets/media__1782768140851.jpg"),
+    src: "assets/media__1782768140851.jpg",
     title: "Spacious Living Room",
     description: "Bright open-concept design perfect for entertaining.",
     panDirection: "right-to-left" as const,
   },
   {
-    src: staticFile("assets/media__1782768140877.jpg"),
+    src: "assets/media__1782768140877.jpg",
     title: "Elegant Kitchen & Island",
     description: "Premium countertops and custom cabinetry.",
     panDirection: "bottom-to-top" as const,
   },
   {
-    src: staticFile("assets/media__1782768140904.jpg"),
+    src: "assets/media__1782768140904.jpg",
     title: "Comfortable Living Space",
     description: "Cozy layout with excellent natural lighting.",
     panDirection: "top-to-bottom" as const,
   },
   {
-    src: staticFile("assets/media__1782768140912.jpg"),
+    src: "assets/media__1782768140912.jpg",
     title: "Serene Backyard Patio",
     description: "Unwind under the gorgeous sunset sky.",
     panDirection: "left-to-right" as const,
   },
 ];
 
-export const MyComposition = () => {
+export const MyComposition: React.FC<MyCompositionProps> = ({ scenes }) => {
   return (
     <TransitionSeries>
       {scenes.map((scene, idx) => {
@@ -67,4 +80,5 @@ export const MyComposition = () => {
     </TransitionSeries>
   );
 };
+
 
